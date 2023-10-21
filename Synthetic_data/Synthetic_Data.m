@@ -2,7 +2,7 @@ clc;
 clear all;
 
 % This code helps to reproduce the results on synthetic data in the paper
-%"clustering with simplicial complexes".
+%clustering with simplicial complexes.
 
 %The cluster indices of respective methods are given by simplicial cluster,
 %motif cluster, graph cluster.
@@ -14,12 +14,13 @@ addpath("Helper_Functions")
 B1 = [1 1 0 1 0 0 0 0 0 0 0 0 0;0 0 0 1 1 1 0 1 0 0 0 0 0;1 0 1 0 0 0 0 0 0 0 0 0 0;0 1 1 0 1 0 1 0 0 0 0 0 0;0 0 0 0 0 0 0 1 1 1 1 0 0;...
     0 0 0 0 0 0 0 0 0 0 1 1 0;0 0 0 0 0 1 1 0 1 0 0 0 1;0 0 0 0 0 0 0 0 0 1 0 1 1];
 
+%Generated considering both open and closed triangles
 B2 = [1 0 0 0 0 0;1 1 0 0 0 0;1 0 0 0 0 0;0 1 0 0 0 0;0 1 1 0 0 0;0 0 1 1 0 0;0 0 1 0 0 0;0 0 0 1 0 0;0 0 0 1 1 0;0 0 0 0 1 1;0 0 0 0 0 1;...
       0 0 0 0 0 1;0 0 0 0 1 0];
 
-Motif_Laplacian = B1*(B2*B2')*B1';
+Motif_Laplacian = B1*(B2*B2')*B1'/4;
 
-Motif_Adjacency =  abs(diag(diag(Motif_Laplacian)) - Motif_Laplacian)/4;
+Motif_Adjacency =  abs(diag(diag(Motif_Laplacian)) - Motif_Laplacian);
 
 [Motif_cluster,Motif_condv,Motif_condc,Motif_order] = SpectralPartitioning(Motif_Adjacency);
 
@@ -41,9 +42,9 @@ B1 = [1 1 0 1 0 0 0 0 0 0 0 0 0;0 0 0 1 1 1 0 1 0 0 0 0 0;1 0 1 0 0 0 0 0 0 0 0 
 B2 = [1 0 0 0 0;1 1 0 0 0;1 0 0 0 0;0 1 0 0 0;0 1 1 0 0;0 0 1 1 0;0 0 1 0 0;0 0 0 1 0;0 0 0 1 0;0 0 0 0 1;0 0 0 0 1;...
       0 0 0 0 1;0 0 0 0 0];
 
-Simplicial_Laplacian = B1*(B2*B2')*B1';
+Simplicial_Laplacian = B1*(B2*B2')*B1'/4;
 
-Simplicial_Adjacency =  abs(diag(diag(Simplicial_Laplacian)) - Simplicial_Laplacian)/4;
+Simplicial_Adjacency =  abs(diag(diag(Simplicial_Laplacian)) - Simplicial_Laplacian);
 
 [simplicial_cluster,simplicial_condv,simplicial_condc,simplicial_order] = SpectralPartitioning(Simplicial_Adjacency);
 
@@ -69,7 +70,7 @@ cluster_graph(Graph_cluster) = 1;
 Nmi_graph  = nmi(groundtruths,cluster_graph);
 
 
-% %% Histogram plots
+% %% Histogram plots of all the methods
 % 
 % 
 % %X = {'Synthetic data','Karate network data','Polbooks','Football'};
@@ -140,39 +141,8 @@ Nmi_graph  = nmi(groundtruths,cluster_graph);
 % ylabel ('Penetration Level (%)','fontweight','bold','FontSize',12);
 % legend('DG', 'PV');
 % ylim([min(ylim) 75])
-% 
-% 
-% %% Using the idea of CCA
-% 
-% L_graph = diag(sum(Graph_Adjacency))- Graph_Adjacency;
-% 
-% L_simplicial = diag(sum(Simplicial_Adjacency)) - Simplicial_Adjacency;
-% 
-% 
-% [A B r U V] = canoncorr(L_graph, L_simplicial);
-% 
-% opts = statset('Display','final');
-% 
-% [idx_simplicial,C] = kmeans(U(:,5:6),2,'Distance','cityblock',...
-%     'Replicates',5,'Options',opts);
-% 
-% [idx_graph,C] = kmeans(V(:,5:6),2,'Distance','cityblock',...
-%     'Replicates',5,'Options',opts);
-% 
-% %% Using the sum of the Laplcians
-% 
-% L_overall = 0.5*L_graph + 0.5*L_simplicial;
-% 
-% [U_overall,lambda_overall] = eig(L_overall);
-% 
-% opts = statset('Display','final');
-% 
-% [idx_overall,C] = kmeans(U_overall(:,2:3),2,'Distance','cosine',...
-%     'Replicates',5,'Options',opts);
-% 
-% %[idx_graph,C] = kmeans(V(:,5:6),2,'Distance','cityblock',...
-% %    'Replicates',5,'Options',opts);
+%
 
-%% With the mean laplcian
+
 
 
