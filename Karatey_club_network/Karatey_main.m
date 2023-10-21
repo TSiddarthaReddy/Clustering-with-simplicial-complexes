@@ -15,8 +15,8 @@ W_motif = MotifAdjacency(adj_matrix, 'M4');
 W_simplicial = full(W_motif);
 [ind1,ind2] = find(W_motif>0);
 
-% Indices of the edges that are to be removed as expalined this is
-% exhaustive search method
+% Indices of the edges that are to be removed as explained in the paper this is
+% exhaustive search method 
 ind_randsmple = [55,54];
 W_simplicial(ind1(ind_randsmple),ind2(ind_randsmple)) = 0;
 W_simplicial(ind2(ind_randsmple),ind1(ind_randsmple)) = 0;
